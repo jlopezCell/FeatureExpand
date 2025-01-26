@@ -10,7 +10,6 @@ data = {
 }
 df = pd.DataFrame(data)
 
-
 # Crear una instancia de FeatureExpander
 expander = FeatureExpander(n_variables=2, formula=[[[1, 3]]])
 
