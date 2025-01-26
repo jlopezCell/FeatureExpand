@@ -1,3 +1,4 @@
+import unittest
 
 def generate_variable_map(variables):
     if not isinstance(variables, list) or len(variables) == 0:
@@ -59,3 +60,27 @@ def encode(numero, n):
         limite = limite * 0.5
     return digitos
 
+def migrate(values, nvariables, formula):
+    # Encode all values
+    vec = []
+    labels = []
+    
+    for value in values:
+        resultado = encode(value, nvariables)
+        vec += resultado
+    
+    # Create labels and set global variables
+    for i, valor in enumerate(vec):
+        globals()[f'z{i}'] = True if valor == 1 else False
+        labels.append(f' (not z{i})')
+        labels.append(f'z{i}')
+    
+    # Transform the formula into a logical expression
+    logical_expression = transform_function(formula, labels)
+    logical_expression = logical_expression.replace("&", " and ").replace("!", " not ")
+    
+    # Evaluate the logical expression
+    result = eval("[" + logical_expression + "]")
+    
+    # Convert the result to a list of binary values
+    return [1 if x else 0 for x in result]
