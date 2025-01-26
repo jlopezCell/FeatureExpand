@@ -11,8 +11,9 @@ data = {
 df = pd.DataFrame(data)
 
 # Crear una instancia de FeatureExpander
-expander = FeatureExpander(n_variables=2, formula=[[[1, 3]]])
-
+expander = FeatureExpander(n_variables=1)
 resul = expander.fit(df)
 
+values = [0, 1]
+print(expander.transform(values))
 print(resul)

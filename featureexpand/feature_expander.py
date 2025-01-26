@@ -1,6 +1,7 @@
 import unittest
 import requests
 import pandas as pd
+import json
 
 def generate_variable_map(variables):
     if not isinstance(variables, list) or len(variables) == 0:
@@ -71,8 +72,6 @@ def migrate(values, nvariables, formula):
         resultado = encode(value, nvariables)
         vec += resultado
     
-    print(vec)
-
     # Create labels and set global variables
     for i, valor in enumerate(vec):
         globals()[f'z{i}'] = True if valor == 1 else False
@@ -164,7 +163,37 @@ class FeatureExpander:
         try:
             response = requests.post(url, headers=headers, json=json_data)
             response.raise_for_status()  # Lanza una excepción si la respuesta no es 200
-            print("Respuesta de la API:", response.json())
+           ## print("Respuesta de la API:", response.json())
+            result = response.json()
+            # Extract the simplified expression from the API response
+            simplified_expression = result.get("simplified_expression", [])
+            
+            # Initialize variables to store the formulas
+            formulaN = None
+            
+            # Iterate over the simplified expression to find the formulas
+            for expression in simplified_expression:
+                if expression.get("cluster") == "Cumple":
+                    formulaYStr = expression.get("result")
+                    exp = json.loads(formulaYStr)
+                    formula = json.loads(exp.get("result"))
+                else:
+                    formulaYStr = expression.get("result")
+                    exp = json.loads(formulaYStr)
+                    formulaN = json.loads(exp.get("result"))
+            
+            # Assign the formulaY to self.formula
+            if formula is not None:
+                self.formula = formula
+            else:
+                raise ValueError("No se encontró la fórmula con la etiqueta 'Cumple' en la respuesta de la API.")
+            # Assign the formulaY to self.formula
+
+            if formulaN is not None:
+                self.formulaN = formulaN
+            else:
+                raise ValueError("No se encontró la fórmula con la etiqueta 'No Cumple' en la respuesta de la API.")
+
         except requests.exceptions.RequestException as e:
             print(f"Error al enviar datos a la API: {e}")
 
@@ -185,9 +214,9 @@ class FeatureExpander:
         """
         if self.n_variables is None or self.formula is None:
             raise ValueError("n_variables y formula deben ser especificados antes de transformar los datos.")
-
         # Aquí podrías llamar a la función `migrate` o cualquier otra lógica de transformación.
         X_transformed = migrate(X, self.n_variables, self.formula)
+##        N_transformed = migrate(X, self.n_variables, self.formulaN)
         return X_transformed
 
     def fit_transform(self, X, y=None):
