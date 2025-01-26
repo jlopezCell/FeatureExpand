@@ -76,6 +76,15 @@ class TestFeatureExpander(unittest.TestCase):
         with self.assertRaises(TypeError):
             list_to_xor_expression("not a list", variable_map)
 
+
+    def test_encode_with_0_84_and_n_5(self):
+        # Prueba la función con numero = 0.84 y n = 5
+        resultado = encode(0.84, 5)
+        print(resultado)  # Esto imprimirá la lista de dígitos resultante
+        # Verifica que el resultado sea el esperado
+        self.assertEqual(resultado, [1, 1, 0, 1, 0])  # Ajusta este valor según la lógica de encode
+
+
     def test_transform_function(self):
         variable_map = ["a'", "b'", "c'"]
         

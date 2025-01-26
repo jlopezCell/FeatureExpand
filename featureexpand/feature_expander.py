@@ -44,6 +44,9 @@ def transform_function(representation, variable_map):
         raise ValueError(f"Error al transformar la función: {error}")
 
 def encode(numero, n):
+    if numero < 0:
+        raise ValueError("El valor no puede ser negativo")
+
     resto = numero
     digitos = []
     limite = 0.5
