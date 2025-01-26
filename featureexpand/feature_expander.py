@@ -121,6 +121,9 @@ class FeatureExpander:
         self : FeatureExpander
             Instancia del modelo ajustado.
         """
+
+
+        
         # Simular la obtención de datos de una hoja de cálculo
         # Supongamos que X es un DataFrame de pandas con los datos de la hoja de cálculo
         if isinstance(X, pd.DataFrame):
@@ -143,6 +146,8 @@ class FeatureExpander:
         self.send_data_to_api(json_data)
 
         return self
+
+
 
     def send_data_to_api(self, json_data):
         """
