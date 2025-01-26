@@ -69,12 +69,14 @@ def migrate(values, nvariables, formula):
         resultado = encode(value, nvariables)
         vec += resultado
     
+
     # Create labels and set global variables
     for i, valor in enumerate(vec):
         globals()[f'z{i}'] = True if valor == 1 else False
         labels.append(f' (not z{i})')
         labels.append(f'z{i}')
     
+    labels.reverse()
     # Transform the formula into a logical expression
     logical_expression = transform_function(formula, labels)
     logical_expression = logical_expression.replace("&", " and ").replace("!", " not ")
