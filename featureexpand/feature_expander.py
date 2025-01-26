@@ -69,6 +69,7 @@ def migrate(values, nvariables, formula):
         resultado = encode(value, nvariables)
         vec += resultado
     
+    print(vec)
 
     # Create labels and set global variables
     for i, valor in enumerate(vec):
