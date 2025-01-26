@@ -87,3 +87,79 @@ def migrate(values, nvariables, formula):
     
     # Convert the result to a list of binary values
     return [1 if x else 0 for x in result]
+
+
+class FeatureExpander:
+    def __init__(self, n_variables=None, formula=None):
+        """
+        Constructor de la clase FeatureExpander.
+
+        Parámetros:
+        -----------
+        n_variables : int, opcional
+            Número de variables a utilizar en la expansión de características.
+        formula : list, opcional
+            Fórmula lógica que define cómo se expandirán las características.
+        """
+        self.n_variables = n_variables
+        self.formula = formula
+
+    def fit(self, X, y=None):
+        """
+        Ajusta el modelo a los datos de entrada.
+
+        Parámetros:
+        -----------
+        X : array-like
+            Datos de entrada.
+        y : array-like, opcional
+            Etiquetas de los datos de entrada. No se utiliza en este caso, pero se incluye para mantener la compatibilidad con Scikit-learn.
+
+        Retorna:
+        --------
+        self : FeatureExpander
+            Instancia del modelo ajustado.
+        """
+        # Aquí podrías realizar cualquier ajuste necesario basado en los datos de entrada.
+        # Por ejemplo, calcular estadísticas, ajustar parámetros, etc.
+        return self
+
+    def transform(self, X):
+        """
+        Transforma los datos de entrada utilizando la fórmula y el número de variables especificados.
+
+        Parámetros:
+        -----------
+        X : array-like
+            Datos de entrada.
+
+        Retorna:
+        --------
+        X_transformed : array-like
+            Datos transformados.
+        """
+        if self.n_variables is None or self.formula is None:
+            raise ValueError("n_variables y formula deben ser especificados antes de transformar los datos.")
+
+        # Aquí podrías llamar a la función `migrate` o cualquier otra lógica de transformación.
+        X_transformed = migrate(X, self.n_variables, self.formula)
+        return X_transformed
+
+    def fit_transform(self, X, y=None):
+        """
+        Ajusta el modelo y transforma los datos de entrada en un solo paso.
+
+        Parámetros:
+        -----------
+        X : array-like
+            Datos de entrada.
+        y : array-like, opcional
+            Etiquetas de los datos de entrada.
+
+        Retorna:
+        --------
+        X_transformed : array-like
+            Datos transformados.
+        """
+        self.fit(X, y)
+        return self.transform(X)
