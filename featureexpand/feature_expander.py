@@ -1,4 +1,6 @@
 import unittest
+import requests
+import pandas as pd
 
 def generate_variable_map(variables):
     if not isinstance(variables, list) or len(variables) == 0:
@@ -120,9 +122,52 @@ class FeatureExpander:
         self : FeatureExpander
             Instancia del modelo ajustado.
         """
-        # Aquí podrías realizar cualquier ajuste necesario basado en los datos de entrada.
-        # Por ejemplo, calcular estadísticas, ajustar parámetros, etc.
+        # Simular la obtención de datos de una hoja de cálculo
+        # Supongamos que X es un DataFrame de pandas con los datos de la hoja de cálculo
+        if isinstance(X, pd.DataFrame):
+            headers = X.columns.tolist()
+            data = X.values.tolist()
+        else:
+            raise ValueError("X debe ser un DataFrame de pandas")
+
+        # Generar JSON de los datos
+        json_data = {
+            "sheetData": {
+                "headers": headers,
+                "mintermins": data  # Aquí podrías procesar los datos si es necesario
+            },
+            "test": [["Cluster", "k0"]],
+            "exclude": ["Cluster"]
+        }
+
+        # Enviar JSON por POST a un servicio REST API
+        self.send_data_to_api(json_data)
+
         return self
+
+    def send_data_to_api(self, json_data):
+        """
+        Envía los datos a una API REST.
+        Parámetros:
+        -----------
+        json_data : dict
+            Datos en formato JSON para enviar a la API.
+        """
+        url = 'https://www.booloptimizer.com/api/simplify'  # Reemplaza con la URL de tu API
+        url = 'http://127.0.0.1:5000/api/simplify'  # Reemplaza con la URL de tu API
+        bearer_token = "39c201cd-6b66-4458-aa38-504e25acdfe1"
+        headers = {
+            'Authorization': f'Bearer {bearer_token}',
+            'Content-Type': 'application/json'
+        }
+
+        try:
+            response = requests.post(url, headers=headers, json=json_data)
+            response.raise_for_status()  # Lanza una excepción si la respuesta no es 200
+            print("Respuesta de la API:", response.json())
+        except requests.exceptions.RequestException as e:
+            print(f"Error al enviar datos a la API: {e}")
+
 
     def transform(self, X):
         """
@@ -161,5 +206,5 @@ class FeatureExpander:
         X_transformed : array-like
             Datos transformados.
         """
-        self.fit(X, y)
+        ##self.fit(X, y)
         return self.transform(X)
