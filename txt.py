@@ -65,6 +65,6 @@ df = pd.DataFrame(data)
 expander = FeatureExpander(n_variables=1)
 resul = expander.fit(df)
 
-values = [ 1,1]
+values = [1,0]
 print("Resultados ",expander.transform(values))
 print(resul)
