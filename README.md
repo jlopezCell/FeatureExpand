@@ -31,21 +31,51 @@ Here is a basic example of how to use FeatureExpand:
 ```python
 import pandas as pd
 from featureexpand import FeatureExpander
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error
 
 # Create a sample DataFrame
 data = {
     'A': [1, 2, 3, 4, 5],
-    'B': [5, 4, 3, 2, 1]
+    'B': [5, 4, 3, 2, 1],
+    'y': [10, 20, 30, 40, 50]  # Target variable
 }
-df = pd.DataFrame(data)
+
+# Split the data into training and testing sets
+X = df_expanded.drop(columns=['y'])
+y = df_expanded['y']
 
 # Initialize the FeatureExpander
 expander = FeatureExpander()
 
 # Add new features
-df_expanded = expander.add_features(df)
+X_expanded = expander.add_features(X,y,precision)
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+X_train_expanded, X_test_expanded, y_train_expanded, y_test_expanded = train_test_split(X_expanded, y, test_size=0.2, random_state=42)
+
+# Fit a linear regression model
+model = LinearRegression()
+model.fit(X_train, y_train)
+
+# Fit a linear regression model
+model_expanded = LinearRegression()
+model_expanded.fit(X_train_expanded, y_train_expanded)
+
+# Make predictions
+y_pred = model.predict(X_test)
+# Make predictions
+y_pred_expanded = model_expanded.predict(X_test_expanded)
+
+# Evaluate the model
+mse = mean_squared_error(y_test, y_pred)
+mse_expanded = mean_squared_error(y_test_expanded, y_pred_expanded)
+print(f'Mean Squared Error: {mse} vs Mean Squared Error Expanded: {mse_expanded}')
 
 print(df_expanded)
+
 ```
 
 ## Documentation
