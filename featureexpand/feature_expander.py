@@ -122,8 +122,8 @@ class FeatureExpander:
             Instancia del modelo ajustado.
         """
 
-
         
+
         # Simular la obtención de datos de una hoja de cálculo
         # Supongamos que X es un DataFrame de pandas con los datos de la hoja de cálculo
         if isinstance(X, pd.DataFrame):
@@ -132,6 +132,7 @@ class FeatureExpander:
         else:
             raise ValueError("X debe ser un DataFrame de pandas")
 
+        print("Envio ", headers,"XXXXX", data)
         # Generar JSON de los datos
         json_data = {
             "sheetData": {

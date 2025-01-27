@@ -3,26 +3,23 @@ import numpy as np
 from featureexpand.feature_expander import FeatureExpander, encode, generate_variable_map
 import json
 
-def generate_json_from_matrix(X):
+def generate_json_from_matrix(X,y=None,numberVariables=1):
     # Convertir cada fila de la matriz X en un mintermin (cadena binaria)
     
     mintermins = []
     for i in range(len(X)):
         rx = ""
         for j in range(len(X[i])):
-            rx += "".join(map(str, encode(X[i][j],1)))
+            rx += "".join(map(str, encode(X[i][j],numberVariables)))
         mintermins.append(rx)
     
     print("Minterm", mintermins)
     # Asignar los Cluster en función del primer valor de cada fila
-
-
-    Cluster = ["k0" if row[0] == 0 else "k1" for row in X]
     
     # Crear el diccionario con los datos
     data = {
         "mintermins": mintermins,
-        "Cluster": Cluster
+        "Cluster": y
     }
     
     # Convertir el diccionario a JSON
@@ -52,7 +49,8 @@ X = [
     [0, 0]
 ]
 
-json_output = generate_json_from_matrix(X)
+Cluster = ["k0" if row[0] == 0 else "k1" for row in X]
+json_output = generate_json_from_matrix(X,Cluster)
 
 print(json_output)
 
@@ -67,6 +65,6 @@ df = pd.DataFrame(data)
 expander = FeatureExpander(n_variables=1)
 resul = expander.fit(df)
 
-values = [0, 1]
-print(expander.transform(values))
+values = [ 1,1]
+print("Resultados ",expander.transform(values))
 print(resul)
