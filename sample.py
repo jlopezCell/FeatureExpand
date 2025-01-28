@@ -26,8 +26,8 @@ precision = 1
 # Initialize the FeatureExpander
 expander = FeatureExpander()
 # Add new features
-yy=pd.Series({'Cluster': ["x1", "x1", "x0", "x1", "x0", "x1", "x0"]})
-expander.fit(X,yy,precision,response="x1")
+yy=pd.Series({'Cluster': ["x1", "x1", "x0", "x1", "x0", "x1", "x1"]})
+expander.fit(X,yy,precision,response="x0")
 values = [[1,0]]
 print("Resultados ",expander.transform(values))
 df = pd.DataFrame(data)

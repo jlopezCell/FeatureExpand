@@ -18,10 +18,11 @@ def list_to_logical_expression(lst, variable_map):
         return number_to_variable(lst, variable_map)
     if len(lst) == 0:
         return "TRUE"  # Caso especial para lista vacía
-    negat = "!" if lst[0] % 2 == 0 else ""
-    adder = 1 if lst[0] % 2 == 0 else 0
-    print("H3..",lst,variable_map,lst[0])
-    expression = negat + "(" + '^'.join(number_to_variable((int(num / 2)*2), variable_map).replace("'", "") for num in lst) + ")" 
+    xxy = lst[0]
+    negat = "!" if (xxy%2 == 0) else ""
+    print("H3..",lst,variable_map,lst[0],"Deben ser ",xxy - xxy%2 , xxy)
+    ##int(num / 2)*2
+    expression = negat + "(" + '^'.join(number_to_variable((num - num%2), variable_map).replace("'", "") for num in lst) + ")" 
     print("H2..",expression)
     return expression
 
