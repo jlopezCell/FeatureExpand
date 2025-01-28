@@ -189,6 +189,7 @@ class FeatureExpander:
         if self.n_variables is None or self.formula is None:
             raise ValueError("n_variables y formula deben ser especificados antes de expandir las características.")
         # Aquí podrías llamar a la función `migrate` o cualquier otra lógica de expansión.
+        print("self.formula",self.formula)
         X_expanded = migrate(data, self.n_variables, self.formula)
         print(X_expanded)
         return X_expanded
@@ -258,7 +259,7 @@ class FeatureExpander:
         try:
             response = requests.post(url, headers=headers, json=json_data)
             response.raise_for_status()  # Lanza una excepción si la respuesta no es 200
-           ## print("Respuesta de la API:", response.json())
+            print("Respuesta de la API:", response.json())
             result = response.json()
             # Extract the simplified expression from the API response
             simplified_expression = result.get("simplified_expression", [])

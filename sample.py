@@ -5,10 +5,11 @@ from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error
 # Create a sample DataFrame
 data = {
-    'A': [0, 1, 1, 1, 0, 1, 1],
-    'B': [1, 0, 1, 0, 0, 0, 1],
-    'Cluster': [1, 1, 0, 1, 0, 1, 0]  # Target variable
+            'A': [0, 1, 1, 1, 0, 1, 1],
+            'B': [1, 0, 1, 0, 0, 0, 1],
+      'Cluster': [1, 1, 0, 1, 0, 1, 0]  # Target variable
 }
+yy=pd.Series({'Cluster': ["x1", "x1", "x1", "x1", "x0", "x1", "x1"]})
 df = pd.DataFrame(data)
 # Split the data into training and testing sets
 X = df.drop(columns=['Cluster'])
@@ -22,12 +23,12 @@ y_pred = model.predict(X_test)
 # Evaluate the model
 mse = mean_squared_error(y_test, y_pred)
 print(f'Mean Squared Error: {mse}')
-precision = 2
+precision = 1
 # Initialize the FeatureExpander
 expander = FeatureExpander()
 # Add new features
-yy=pd.Series({'Cluster': ["x1", "x1", "x0", "x1", "x0", "x1", "x1"]})
-expander.fit(X,yy,precision,response="x1")
+
+expander.fit(X,yy,precision,response="x0")
 values = [[1,0]]
 ##print("Resultados ",expander.transform(values))
 df = pd.DataFrame(data)
