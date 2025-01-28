@@ -105,6 +105,10 @@ class FeatureExpander:
         self.n_variables = n_variables
         self.formula = formula
 
+    def add_features(self, X, y=None, precision=1):
+        print( X, y, precision)
+        
+
     def fit(self, X, y=None):
         """
         Ajusta el modelo a los datos de entrada.
