@@ -32,6 +32,7 @@ values = [[1,0]]
 print("Resultados ",expander.transform(values))
 df = pd.DataFrame(data)
 X = df
+X = df.drop(columns=['Cluster'])
 X_expanded = expander.add_features(X)
 exit(0)
 # Initialize the FeatureExpander

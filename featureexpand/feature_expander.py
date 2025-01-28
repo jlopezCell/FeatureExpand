@@ -34,7 +34,7 @@ def list_to_xor_expression(lst, variable_map):
     return '&'.join(number_to_variable(num, variable_map) for num in lst)
 
 def transform_function(representation, variable_map):
-    print("Transff")
+    print("Transff",representation, variable_map)
     if not isinstance(representation, list) or len(representation) == 0:
         raise ValueError("La representación debe ser un array no vacío")
     try:
@@ -87,6 +87,7 @@ def migrate(values, nvariables, formula):
     for vector in vec:    
         # Create labels and set global variables
         for i, valor in enumerate(vector):
+            print("C1",f'z{i}',i,valor)
             globals()[f'z{i}'] = True if valor == 1 else False
             labels.append(f' (not z{i})')
             labels.append(f'z{i}')
@@ -96,7 +97,7 @@ def migrate(values, nvariables, formula):
             logical_expression = transform_function(formula, labels)
             logical_expression = logical_expression.replace("&", " and ").replace("!", " not ")
 
-        print("H1",z0,z1,"LOGI",logical_expression)
+        print("H1",z0,z1,"=",eval("[" + logical_expression + "]"),"LOGI",logical_expression)
         # Evaluate the logical expression
         result.append(eval("[" + logical_expression + "]"))
     
