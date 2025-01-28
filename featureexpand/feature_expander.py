@@ -75,7 +75,7 @@ def migrate(values, nvariables, formula):
         rx = ""
         for j in range(len(X[i])):
             rx += "".join(map(str, encode(X[i][j],nvariables)))
-            vecs.append(encode(X[i][j],nvariables))
+            vecs.append(encode(X[i][j],nvariables)[0])
         vec.append(vecs)
     result = []    
     for vector in vec:    
@@ -89,7 +89,7 @@ def migrate(values, nvariables, formula):
         # Transform the formula into a logical expression
         logical_expression = transform_function(formula, labels)
         logical_expression = logical_expression.replace("&", " and ").replace("!", " not ")
-        
+        print(z0,z1,logical_expression)
         # Evaluate the logical expression
         result.append(eval("[" + logical_expression + "]"))
     
