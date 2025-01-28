@@ -67,27 +67,34 @@ def migrate(values, nvariables, formula):
     # Encode all values
     vec = []
     labels = []
+
+    X = values    
+    vec = []
+    for i in range(len(X)):
+        vecs = []
+        rx = ""
+        for j in range(len(X[i])):
+            rx += "".join(map(str, encode(X[i][j],nvariables)))
+            vecs.append(encode(X[i][j],nvariables))
+        vec.append(vecs)
+    result = []    
+    for vector in vec:    
+        # Create labels and set global variables
+        for i, valor in enumerate(vector):
+            globals()[f'z{i}'] = True if valor == 1 else False
+            labels.append(f' (not z{i})')
+            labels.append(f'z{i}')
     
-    for value in values:
-        resultado = encode(value, nvariables)
-        vec += resultado
-    
-    # Create labels and set global variables
-    for i, valor in enumerate(vec):
-        globals()[f'z{i}'] = True if valor == 1 else False
-        labels.append(f' (not z{i})')
-        labels.append(f'z{i}')
-    
-    labels.reverse()
-    # Transform the formula into a logical expression
-    logical_expression = transform_function(formula, labels)
-    logical_expression = logical_expression.replace("&", " and ").replace("!", " not ")
-    
-    # Evaluate the logical expression
-    result = eval("[" + logical_expression + "]")
+        labels.reverse()
+        # Transform the formula into a logical expression
+        logical_expression = transform_function(formula, labels)
+        logical_expression = logical_expression.replace("&", " and ").replace("!", " not ")
+        
+        # Evaluate the logical expression
+        result.append(eval("[" + logical_expression + "]"))
     
     # Convert the result to a list of binary values
-    return [1 if x else 0 for x in result]
+    return result
 
 
 class FeatureExpander:
@@ -149,6 +156,35 @@ class FeatureExpander:
         self.send_data_to_api(json_data)
 
 
+    def add_features(self, X):
+        """
+        Expande las características de los datos de entrada utilizando la fórmula y el número de variables especificados.
+
+        Parámetros:
+        -----------
+        X : array-like
+            Datos de entrada.
+
+        Retorna:
+        --------
+        X_expanded : array-like
+            Datos de entrada con características expandidas.
+        """
+        print("PASO 1", X)
+
+        #quiero verificar que X sea un DataFrame de pandas
+        if isinstance(X, pd.DataFrame):
+            headers = X.columns.tolist()
+            data = X.values.tolist()
+        else:
+            data = X
+            headers = ["mintermins"]
+        if self.n_variables is None or self.formula is None:
+            raise ValueError("n_variables y formula deben ser especificados antes de expandir las características.")
+        # Aquí podrías llamar a la función `migrate` o cualquier otra lógica de expansión.
+        X_expanded = migrate(data, self.n_variables, self.formula)
+        print(X_expanded)
+        return X_expanded
 
 
     def fitOld(self, X, y=None):
