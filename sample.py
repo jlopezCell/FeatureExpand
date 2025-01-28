@@ -22,14 +22,14 @@ y_pred = model.predict(X_test)
 # Evaluate the model
 mse = mean_squared_error(y_test, y_pred)
 print(f'Mean Squared Error: {mse}')
-precision = 1
+precision = 2
 # Initialize the FeatureExpander
 expander = FeatureExpander()
 # Add new features
 yy=pd.Series({'Cluster': ["x1", "x1", "x0", "x1", "x0", "x1", "x1"]})
 expander.fit(X,yy,precision,response="x1")
 values = [[1,0]]
-print("Resultados ",expander.transform(values))
+##print("Resultados ",expander.transform(values))
 df = pd.DataFrame(data)
 X = df
 X = df.drop(columns=['Cluster'])
