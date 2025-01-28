@@ -87,7 +87,6 @@ def migrate(values, nvariables, formula):
     for vector in vec:    
         # Create labels and set global variables
         for i, valor in enumerate(vector):
-            print("C1",f'z{i}',i,valor)
             globals()[f'z{i}'] = True if valor == 1 else False
             labels.append(f' (not z{i})')
             labels.append(f'z{i}')
@@ -97,7 +96,7 @@ def migrate(values, nvariables, formula):
             logical_expression = transform_function(formula, labels)
             logical_expression = logical_expression.replace("&", " and ").replace("!", " not ")
 
-        print("H1",z0,z1,"=",eval("[" + logical_expression + "]"),"LOGI",logical_expression)
+        print("H1",vector,z0,z1,"=",eval("[" + logical_expression + "]"),"LOGI",logical_expression)
         # Evaluate the logical expression
         result.append(eval("[" + logical_expression + "]"))
     
