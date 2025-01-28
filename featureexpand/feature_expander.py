@@ -105,7 +105,7 @@ class FeatureExpander:
         self.n_variables = n_variables
         self.formula = formula
 
-    def fit(self, X, y=None, precision=1):
+    def fit(self, X, y=None, precision=1, response="x1"):
         self.n_variables = precision
         print( X, y, precision)
         # Simular la obtención de datos de una hoja de cálculo
@@ -136,7 +136,7 @@ class FeatureExpander:
                 "headers": headers,
                 "mintermins": mintermins  # Aquí podrías procesar los datos si es necesario
             },
-            "test": [["Cluster", "x1"]],
+            "test": [["Cluster", response]],
             "exclude": ["Cluster"]
         }
 
