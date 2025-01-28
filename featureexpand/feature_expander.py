@@ -105,7 +105,7 @@ class FeatureExpander:
         self.n_variables = n_variables
         self.formula = formula
 
-    def add_features(self, X, y=None, precision=1):
+    def fit(self, X, y=None, precision=1):
         self.n_variables = precision
         print( X, y, precision)
         # Simular la obtención de datos de una hoja de cálculo
@@ -122,9 +122,7 @@ class FeatureExpander:
         X = X.values.tolist()
         ## X = X transpose
         ##X = list(map(list, zip(*X)))
-        y = y.values.tolist()
-
-        
+        y = y.values.tolist()        
         mintermins = []
         for i in range(len(X)):
             rx = ""
@@ -132,7 +130,6 @@ class FeatureExpander:
                 rx += "".join(map(str, encode(X[i][j],precision)))
             mintermins.append([rx,y[0][i]])
 
-        print("Envio ", headers,"XXXXX", data)
         # Generar JSON de los datos
         json_data = {
             "sheetData": {
@@ -146,6 +143,7 @@ class FeatureExpander:
         # Guardar el JSON en un archivo (opcional)
         with open("data_from_matrix.json", "w") as json_file:
             json_file.write(json.dumps(json_data, indent=4))
+        print("Envio ", json.dumps(json_data, indent=4))
 
         # Enviar JSON por POST a un servicio REST API
         self.send_data_to_api(json_data)
@@ -153,7 +151,7 @@ class FeatureExpander:
 
 
 
-    def fit(self, X, y=None):
+    def fitOld(self, X, y=None):
         """
         Ajusta el modelo a los datos de entrada.
 
