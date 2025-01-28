@@ -106,6 +106,7 @@ class FeatureExpander:
         self.formula = formula
 
     def add_features(self, X, y=None, precision=1):
+        self.n_variables = precision
         print( X, y, precision)
         # Simular la obtención de datos de una hoja de cálculo
         # Supongamos que X es un DataFrame de pandas con los datos de la hoja de cálculo
@@ -192,9 +193,6 @@ class FeatureExpander:
 
         # Enviar JSON por POST a un servicio REST API
         self.send_data_to_api(json_data)
-
-        values = [1,1,0,0]
-        print("Resultados ",self.transform(values))
 
         return self
 

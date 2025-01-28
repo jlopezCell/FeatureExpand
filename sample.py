@@ -34,13 +34,14 @@ mse = mean_squared_error(y_test, y_pred)
 
 print(f'Mean Squared Error: {mse}')
 
-precision = 2
+precision = 1
 # Initialize the FeatureExpander
 expander = FeatureExpander()
 # Add new features
 yy=pd.Series({'Cluster': ["x1", "x1", "x0", "x1", "x0", "x1", "x0"]})
 X_expanded = expander.add_features(X,yy,precision)
-
+values = [1,0]
+print("Resultados ",expander.transform(values))
 exit(0)
 # Initialize the FeatureExpander
 expander = FeatureExpander()
