@@ -107,7 +107,50 @@ class FeatureExpander:
 
     def add_features(self, X, y=None, precision=1):
         print( X, y, precision)
+        # Simular la obtención de datos de una hoja de cálculo
+        # Supongamos que X es un DataFrame de pandas con los datos de la hoja de cálculo
+        if isinstance(X, pd.DataFrame):
+            ## La variable  y que es una serie, extrae el nombre de la columna y lo añade a la lista de headers
+            headers =  ["mintermins","Cluster"]
+            data = X.values.tolist()
+        else:
+            raise ValueError("X debe ser un DataFrame de pandas")
         
+        ## X es un DataFrame de pandas con los datos de la hoja de cálculo, convertelo en una lista de listas
+        
+        X = X.values.tolist()
+        ## X = X transpose
+        ##X = list(map(list, zip(*X)))
+        y = y.values.tolist()
+
+        
+        mintermins = []
+        for i in range(len(X)):
+            rx = ""
+            for j in range(len(X[i])):
+                rx += "".join(map(str, encode(X[i][j],precision)))
+            mintermins.append([rx,y[0][i]])
+
+        print("Envio ", headers,"XXXXX", data)
+        # Generar JSON de los datos
+        json_data = {
+            "sheetData": {
+                "headers": headers,
+                "mintermins": mintermins  # Aquí podrías procesar los datos si es necesario
+            },
+            "test": [["Cluster", "x1"]],
+            "exclude": ["Cluster"]
+        }
+
+        # Guardar el JSON en un archivo (opcional)
+        with open("data_from_matrix.json", "w") as json_file:
+            json_file.write(json.dumps(json_data, indent=4))
+
+        # Enviar JSON por POST a un servicio REST API
+        self.send_data_to_api(json_data)
+
+
+
 
     def fit(self, X, y=None):
         """
@@ -149,6 +192,9 @@ class FeatureExpander:
 
         # Enviar JSON por POST a un servicio REST API
         self.send_data_to_api(json_data)
+
+        values = [1,1,0,0]
+        print("Resultados ",self.transform(values))
 
         return self
 

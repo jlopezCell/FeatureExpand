@@ -8,14 +8,15 @@ from sklearn.metrics import mean_squared_error
 data = {
     'A': [0, 1, 1, 1, 0, 1, 1],
     'B': [1, 0, 1, 0, 0, 0, 1],
-    'y': [1, 1, 0, 1, 0, 1, 0]  # Target variable
+    'Cluster': [1, 1, 0, 1, 0, 1, 0]  # Target variable
 }
 
 df = pd.DataFrame(data)
 
+print(df)
 # Split the data into training and testing sets
-X = df.drop(columns=['y'])
-y = df['y']
+X = df.drop(columns=['Cluster'])
+y = df['Cluster']
 
 print(X,"xxx", y)
 
@@ -33,11 +34,12 @@ mse = mean_squared_error(y_test, y_pred)
 
 print(f'Mean Squared Error: {mse}')
 
-precision = 1
+precision = 2
 # Initialize the FeatureExpander
 expander = FeatureExpander()
 # Add new features
-X_expanded = expander.add_features(X,y,precision)
+yy=pd.Series({'Cluster': ["x1", "x1", "x0", "x1", "x0", "x1", "x0"]})
+X_expanded = expander.add_features(X,yy,precision)
 
 exit(0)
 # Initialize the FeatureExpander
