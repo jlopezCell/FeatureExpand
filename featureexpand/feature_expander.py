@@ -19,7 +19,10 @@ def list_to_logical_expression(lst, variable_map):
     if len(lst) == 0:
         return "TRUE"  # Caso especial para lista vacía
     negat = "!" if lst[0] % 2 == 0 else ""
-    expression = negat + "(" + '^'.join(number_to_variable(num, variable_map).replace("'", "") for num in lst) + ")" 
+    adder = 1 if lst[0] % 2 == 0 else 0
+    print("H3..",lst,variable_map,lst[0])
+    expression = negat + "(" + '^'.join(number_to_variable((int(num / 2)*2), variable_map).replace("'", "") for num in lst) + ")" 
+    print("H2..",expression)
     return expression
 
 def list_to_xor_expression(lst, variable_map):
@@ -30,6 +33,7 @@ def list_to_xor_expression(lst, variable_map):
     return '&'.join(number_to_variable(num, variable_map) for num in lst)
 
 def transform_function(representation, variable_map):
+    print("Transff")
     if not isinstance(representation, list) or len(representation) == 0:
         raise ValueError("La representación debe ser un array no vacío")
     try:
@@ -77,7 +81,8 @@ def migrate(values, nvariables, formula):
             rx += "".join(map(str, encode(X[i][j],nvariables)))
             vecs.append(encode(X[i][j],nvariables)[0])
         vec.append(vecs)
-    result = []    
+    result = []  
+    logical_expression = ""  
     for vector in vec:    
         # Create labels and set global variables
         for i, valor in enumerate(vector):
@@ -86,10 +91,11 @@ def migrate(values, nvariables, formula):
             labels.append(f'z{i}')
     
         labels.reverse()
-        # Transform the formula into a logical expression
-        logical_expression = transform_function(formula, labels)
-        logical_expression = logical_expression.replace("&", " and ").replace("!", " not ")
-        print(z0,z1,logical_expression)
+        if logical_expression=="":        
+            logical_expression = transform_function(formula, labels)
+            logical_expression = logical_expression.replace("&", " and ").replace("!", " not ")
+
+        print("H1",z0,z1,"LOGI",logical_expression)
         # Evaluate the logical expression
         result.append(eval("[" + logical_expression + "]"))
     
