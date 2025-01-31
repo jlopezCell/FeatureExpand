@@ -7,7 +7,7 @@ from sklearn.metrics import mean_squared_error
 data = {
             'A': [0.0, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0],
             'B': [1.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0],
-      'Cluster': [  1,   1,   0,   1,   1,   1,   0]  # Target variable
+      'Cluster': [  1,   1,   0,   1,   0,   1,   0]  # Target variable
 }
 
 datass = {
