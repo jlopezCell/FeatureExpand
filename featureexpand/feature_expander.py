@@ -71,7 +71,9 @@ def encode(numero, n):
 
 def migrate(values: List[List[float]], 
            nvariables: int, 
-           formula: List[List[int]]) -> List[List[float]]:
+           formula: List[List[int]],
+           formulaN: List[List[int]] = None
+           ) -> List[List[float]]:
     """
     Transforms feature vectors using logical formulas and concatenates with original values.
     
@@ -98,7 +100,10 @@ def migrate(values: List[List[float]],
     
     # Step 2: Process each encoded vector through logical transformation
     result = []
+    resultN = []
     logical_expression = ""
+    logical_expressionN = ""
+
     
     for vector in vec:
         # Step 2a: Create boolean variables (z0, z1, etc) for logical evaluation
@@ -113,17 +118,32 @@ def migrate(values: List[List[float]],
         if not logical_expression:
             logical_expression = transform_function(formula, labels)
             logical_expression = logical_expression.replace("&", " and ").replace("!", " not ")
-        
+
+        if formulaN:
+            if not logical_expressionN:
+                logical_expressionN = transform_function(formulaN, labels)
+                logical_expressionN = logical_expressionN.replace("&", " and ").replace("!", " not ")
+
         # Step 2c: Evaluate logical expression and convert to numeric
         preset = eval("[" + logical_expression + "]")
         result = [[1.0 if value else 0.0 for value in row] for row in result]
         preset = [1.0 if value else 0.0 for value in preset]
         result.append(preset)
+
+        if formulaN:
+            presetN = eval("[" + logical_expressionN + "]")
+            resultN = [[1.0 if value else 0.0 for value in row] for row in resultN]
+            presetN = [1.0 if value else 0.0 for value in presetN]        
+            resultN.append(presetN)
+
         labels.clear()
     
     # Step 3: Combine original values with transformed results
-    return [original + expanded for original, expanded in zip(values, result)]
+    if formulaN:
+        cb = [original + expanded for original, expanded in zip(values, result)]
+        return [original + expanded for original, expanded in zip(cb, resultN)]
 
+    return [original + expanded for original, expanded in zip(values, result)]
 
 
 class FeatureExpander:
@@ -212,7 +232,7 @@ class FeatureExpander:
             raise ValueError("n_variables y formula deben ser especificados antes de expandir las características.")
         # Aquí podrías llamar a la función `migrate` o cualquier otra lógica de expansión.
         print("self.formula",self.formula,"self.formulaN",self.formulaN)
-        X_expanded = migrate(data, self.n_variables, self.formula)
+        X_expanded = migrate(data, self.n_variables, self.formula, self.formulaN)
         #print(X_expanded)
         return X_expanded
 
