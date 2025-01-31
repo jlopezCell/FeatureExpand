@@ -36,6 +36,10 @@ data = {
 
 
 ## TODO agegrar el vector de los valores negativos deben ayudar a mejorar la prediccion
+# elf.formula [[[0, 2]]] self.formulaN [[1, 2]]
+# X_expanded [[0.0, 1.0, 0.0], [1.0, 0.0, 0.0], [1.0, 1.0, 1.0], [0.0, 0.0, 1.0], [1.0, 0.0, 0.0], [1.0, 1.0, 1.0]]
+# self.formula [[[0, 2]]] self.formulaN [[1, 2]]
+# Mean Squared Error: 0.44444444444444453 vs Mean Squared Error Expanded: 0.9999999999999996
 data = {
             'A': [0.0, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0],
             'B': [1.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
