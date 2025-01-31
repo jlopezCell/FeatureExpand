@@ -20,10 +20,10 @@ def list_to_logical_expression(lst, variable_map):
         return "TRUE"  # Caso especial para lista vacía
     xxy = lst[0]
     negat = "!" if (xxy%2 == 0) else ""
-    print("H3..",lst,variable_map,lst[0],"Deben ser ",xxy - xxy%2 , xxy)
+    #print("H3..",lst,variable_map,lst[0],"Deben ser ",xxy - xxy%2 , xxy)
     ##int(num / 2)*2
     expression = negat + "(" + '^'.join(number_to_variable((num - num%2), variable_map).replace("'", "") for num in lst) + ")" 
-    print("H2..",expression)
+    #print("H2..",expression)
     return expression
 
 def list_to_xor_expression(lst, variable_map):
@@ -34,7 +34,7 @@ def list_to_xor_expression(lst, variable_map):
     return '&'.join(number_to_variable(num, variable_map) for num in lst)
 
 def transform_function(representation, variable_map):
-    print("Transff",representation, variable_map)
+    #print("Transff",representation, variable_map)
     if not isinstance(representation, list) or len(representation) == 0:
         raise ValueError("La representación debe ser un array no vacío")
     try:
@@ -133,7 +133,7 @@ class FeatureExpander:
 
     def fit(self, X, y=None, precision=1, response="x1"):
         self.n_variables = precision
-        print( X, y, precision)
+        #print( X, y, precision)
         # Simular la obtención de datos de una hoja de cálculo
         # Supongamos que X es un DataFrame de pandas con los datos de la hoja de cálculo
         if isinstance(X, pd.DataFrame):
@@ -169,7 +169,7 @@ class FeatureExpander:
         # Guardar el JSON en un archivo (opcional)
         with open("data_from_matrix.json", "w") as json_file:
             json_file.write(json.dumps(json_data, indent=4))
-        print("Envio ", json.dumps(json_data, indent=4))
+        #print("Envio ", json.dumps(json_data, indent=4))
 
         # Enviar JSON por POST a un servicio REST API
         self.send_data_to_api(json_data)
@@ -189,7 +189,7 @@ class FeatureExpander:
         X_expanded : array-like
             Datos de entrada con características expandidas.
         """
-        print("PASO 1", X)
+        #print("PASO 1", X)
 
         #quiero verificar que X sea un DataFrame de pandas
         if isinstance(X, pd.DataFrame):
@@ -201,9 +201,9 @@ class FeatureExpander:
         if self.n_variables is None or self.formula is None:
             raise ValueError("n_variables y formula deben ser especificados antes de expandir las características.")
         # Aquí podrías llamar a la función `migrate` o cualquier otra lógica de expansión.
-        print("self.formula",self.formula)
+        #print("self.formula",self.formula)
         X_expanded = migrate(data, self.n_variables, self.formula)
-        print(X_expanded)
+        #print(X_expanded)
         return X_expanded
 
 
@@ -234,7 +234,7 @@ class FeatureExpander:
         else:
             raise ValueError("X debe ser un DataFrame de pandas")
 
-        print("Envio ", headers,"XXXXX", data)
+        #print("Envio ", headers,"XXXXX", data)
         # Generar JSON de los datos
         json_data = {
             "sheetData": {
@@ -271,7 +271,7 @@ class FeatureExpander:
         try:
             response = requests.post(url, headers=headers, json=json_data)
             response.raise_for_status()  # Lanza una excepción si la respuesta no es 200
-            print("Respuesta de la API:", response.json())
+            #print("Respuesta de la API:", response.json())
             result = response.json()
             # Extract the simplified expression from the API response
             simplified_expression = result.get("simplified_expression", [])
