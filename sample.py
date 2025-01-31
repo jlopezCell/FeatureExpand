@@ -9,7 +9,9 @@ data = {
             'B': [1, 0, 1, 0, 0, 0, 1],
       'Cluster': [1, 1, 0, 1, 0, 1, 0]  # Target variable
 }
+##yy=pd.Series({'Cluster': ["x1", "x1", "x0", "x1", "x0", "x1", "x1"]})
 yy=pd.Series({'Cluster': ["x1", "x1", "x1", "x1", "x0", "x1", "x1"]})
+##yy=pd.Series({'Cluster': ["x1", "x1", "x1", "x1", "x0", "x0", "x0"]})
 df = pd.DataFrame(data)
 # Split the data into training and testing sets
 X = df.drop(columns=['Cluster'])
@@ -27,14 +29,41 @@ precision = 1
 # Initialize the FeatureExpander
 expander = FeatureExpander()
 # Add new features
-
-expander.fit(X,yy,precision,response="x0")
+expander.fit(X,yy,precision,response="x1")
 values = [[1,0]]
 ##print("Resultados ",expander.transform(values))
 df = pd.DataFrame(data)
 X = df
 X = df.drop(columns=['Cluster'])
 X_expanded = expander.add_features(X)
+print("X_expanded",X_expanded)
+exit(0)
+## Quiero hacer un matrix de confusion
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import classification_report
+from sklearn.metrics import accuracy_score
+from sklearn.metrics import precision_score
+from sklearn.metrics import recall_score
+from sklearn.metrics import f1_score
+
+## itera sobre yy y convertir a 0 y 1
+y_true= [(1 if i=="x1" else 0) for i in yy]
+y_pred= [(1 if i=="x1" else 0) for i in yy]
+##y_pred2 = [(1 if sum(i)>0 else 0) for i in [( 1 if y else 0) for y in X_expanded]]
+confusion_matrix(y_true, y_pred)
+print("Confusion Matrix")
+print(confusion_matrix(y_true, y_pred))
+print("Classification Report")
+print(classification_report(y_true, y_pred))
+print("Accuracy Score")
+print(accuracy_score(y_true, y_pred))
+print("Precision Score")
+print(precision_score(y_true, y_pred, average='macro'))
+print("Recall Score")
+print(recall_score(y_true, y_pred, average='macro'))
+print("F1 Score")
+print(f1_score(y_true, y_pred, average='macro'))
+
 exit(0)
 # Initialize the FeatureExpander
 expander = FeatureExpander()

@@ -96,10 +96,15 @@ def migrate(values, nvariables, formula):
             logical_expression = transform_function(formula, labels)
             logical_expression = logical_expression.replace("&", " and ").replace("!", " not ")
 
-        print("H1",vector,z0,z1,"=",eval("[" + logical_expression + "]"),"LOGI",logical_expression)
+##        print("H1",vector,z0,z1,"=",eval("[" + logical_expression + "]"),"LOGI",logical_expression)
         # Evaluate the logical expression
-        result.append(eval("[" + logical_expression + "]"))
-    
+        preset = eval("[" + logical_expression + "]")
+        # Convert the boolean matrix to a matrix of 0s and 1s
+        result = [[1.0 if value else 0.0 for value in row] for row in result]
+        preset = [1.0 if value else 0.0 for value in preset]
+        result.append(preset)
+        labels = []
+    #print("RESULT",result)
     # Convert the result to a list of binary values
     return result
 
