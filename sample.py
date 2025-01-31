@@ -9,6 +9,12 @@ data = {
             'B': [1.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0],
       'Cluster': [  1,   1,   0,   1,   1,   1,   0]  # Target variable
 }
+
+datass = {
+            'A': [0.0, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0],
+            'B': [1.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0],
+      'Cluster': [  1,   0,   0,   0,   0,   0,   0]  # Target variable
+}
 ##yy=pd.Series({'Cluster': ["x1", "x1", "x1", "x1", "x0", "x1", "x1"]})
 ##yy=pd.Series({'Cluster': ["x1", "x1", "x1", "x1", "x0", "x0", "x0"]})
 df = pd.DataFrame(data)

@@ -201,7 +201,7 @@ class FeatureExpander:
         if self.n_variables is None or self.formula is None:
             raise ValueError("n_variables y formula deben ser especificados antes de expandir las características.")
         # Aquí podrías llamar a la función `migrate` o cualquier otra lógica de expansión.
-        #print("self.formula",self.formula)
+        print("self.formula",self.formula,"self.formulaN",self.formulaN)
         X_expanded = migrate(data, self.n_variables, self.formula)
         #print(X_expanded)
         return X_expanded
