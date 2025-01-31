@@ -2,19 +2,13 @@ import os
 import pandas as pd
 import sympy as sp
 import gradio as gr
-<<<<<<< HEAD
-=======
 import logging
->>>>>>> 802a527 (Add DocumentAnalyzer and MLAgents classes; implement document upload, querying, and agent-based model optimization with Gradio interface)
+import requests
 from crewai import Agent, Task, Crew
+from langchain.embeddings.base import Embeddings
+from langchain.chat_models.base import BaseChatModel
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_community.vectorstores import FAISS
-from langchain_openai import OpenAIEmbeddings, ChatOpenAI
-<<<<<<< HEAD
-from sklearn.linear_model import LinearRegression
-from sklearn.metrics import mean_squared_error
-from sklearn.model_selection import train_test_split
-=======
 from sklearn.linear_model import LinearRegression, Ridge
 from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import train_test_split, cross_val_score
@@ -23,34 +17,76 @@ from dotenv import load_dotenv
 # Configuración de logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
->>>>>>> 802a527 (Add DocumentAnalyzer and MLAgents classes; implement document upload, querying, and agent-based model optimization with Gradio interface)
 
-# 1. Sistema de Gestión Documental
+# 1. Implementación personalizada de DeepSeekEmbeddings
+class DeepSeekEmbeddings(Embeddings):
+    def __init__(self, api_key):
+        self.api_key = api_key
+        self.base_url = "https://api.deepseek.com/v1/embeddings"  # URL de la API de DeepSeek
+
+    def embed_documents(self, texts):
+        headers = {
+            "Authorization": f"Bearer {self.api_key}",
+            "Content-Type": "application/json"
+        }
+        data = {
+            "inputs": texts
+        }
+        response = requests.post("https://api.deepseek.com/v1/chat/completions", headers=headers, json=data)
+        if response.status_code == 200:
+            return response.json()["data"]
+        else:
+            raise Exception(f"Error en la API de DeepSeek: {response.status_code} - {response.text}")
+
+    def embed_query(self, text):
+        return self.embed_documents([text])[0]
+
+# 2. Implementación personalizada de ChatDeepSeek
+class ChatDeepSeek(BaseChatModel):
+    def __init__(self, model_name, api_key):
+        super().__init__()  # Ensure the parent class is initialized
+        self._model_name = model_name  # Use a private attribute to avoid conflicts
+        self._api_key = api_key  # Use a private attribute to avoid conflicts
+        self._base_url = "https://api.deepseek.com/v1"  # Use a private attribute for base_url
+        
+        ##self._base_url = "https://api.deepseek.com/v1/chat/completions"  # Use a private attribute for base_url
+
+    def _generate(self, messages, stop=None):
+        headers = {
+            "Authorization": f"Bearer {self._api_key}",
+            "Content-Type": "application/json"
+        }
+        data = {
+            "model": self._model_name,
+            "messages": messages
+        }
+        response = requests.post("https://api.deepseek.com/v1/chat/completions", headers=headers, json=data)
+        if response.status_code == 200:
+            return response.json()["choices"][0]["message"]["content"]
+        else:
+            raise Exception(f"Error en la API de DeepSeek: {response.status_code} - {response.text}")
+
+    def _llm_type(self):
+        return "deepseek"    
+
+# 3. Sistema de Gestión Documental
 class DocumentAnalyzer:
-    def __init__(self):
+    def __init__(self, api_key):
         self.vector_store = None
-        self.embeddings = OpenAIEmbeddings()
+        self.embeddings = DeepSeekEmbeddings(api_key)  # Usamos DeepSeekEmbeddings
     
     def upload_document(self, file_path):
-<<<<<<< HEAD
-=======
         if self.vector_store:
             return "✅ Documentos ya cargados."
->>>>>>> 802a527 (Add DocumentAnalyzer and MLAgents classes; implement document upload, querying, and agent-based model optimization with Gradio interface)
         try:
             loader = PyPDFLoader(file_path)
             pages = loader.load_and_split()
             self.vector_store = FAISS.from_documents(pages, self.embeddings)
             return "✅ Documentos analizados exitosamente!"
-<<<<<<< HEAD
-        except Exception as e:
-            return f"❌ Error: {str(e)}"
-=======
         except FileNotFoundError:
             return "❌ Error: Archivo no encontrado."
         except Exception as e:
             return f"❌ Error inesperado: {str(e)}"
->>>>>>> 802a527 (Add DocumentAnalyzer and MLAgents classes; implement document upload, querying, and agent-based model optimization with Gradio interface)
     
     def query_documents(self, question):
         if not self.vector_store:
@@ -58,25 +94,18 @@ class DocumentAnalyzer:
         docs = self.vector_store.similarity_search(question, k=3)
         return "\n\n".join([f"📄 Página {d.metadata['page']}:\n{d.page_content}" for d in docs])
 
-# 2. Sistema de Agentes Especializados
+# 4. Sistema de Agentes Especializados
 class Tool:
     def __init__(self, name, func, description):
         self.name = name
         self.func = func
         self.description = description
         
-<<<<<<< HEAD
-# 2. Sistema de Agentes Especializados
-=======
->>>>>>> 802a527 (Add DocumentAnalyzer and MLAgents classes; implement document upload, querying, and agent-based model optimization with Gradio interface)
 class MLAgents:
-    def __init__(self, document_analyzer):
+    def __init__(self, document_analyzer, api_key):
         self.document_analyzer = document_analyzer
-        self.llm = ChatOpenAI(model="gpt-4-1106-preview")
-<<<<<<< HEAD
-=======
+        self.llm = ChatDeepSeek("deepseek-chat", api_key=api_key)  # Usamos ChatDeepSeek
         self.explanation_cache = {}
->>>>>>> 802a527 (Add DocumentAnalyzer and MLAgents classes; implement document upload, querying, and agent-based model optimization with Gradio interface)
         
         # Define tools
         boolean_feature_tool = Tool(
@@ -148,13 +177,6 @@ class MLAgents:
     
     def model_optimization_tool(self, features, target):
         X_train, X_test, y_train, y_test = train_test_split(features, target, test_size=0.2)
-<<<<<<< HEAD
-        model = LinearRegression()
-        model.fit(X_train, y_train)
-        return model, mean_squared_error(y_test, model.predict(X_test))
-    
-    def explanation_generation_tool(self, rule):
-=======
         model = Ridge(alpha=1.0)
         scores = cross_val_score(model, X_train, y_train, cv=5, scoring='neg_mean_squared_error')
         model.fit(X_train, y_train)
@@ -165,7 +187,6 @@ class MLAgents:
         if rule in self.explanation_cache:
             return self.explanation_cache[rule]
         
->>>>>>> 802a527 (Add DocumentAnalyzer and MLAgents classes; implement document upload, querying, and agent-based model optimization with Gradio interface)
         context = self.document_analyzer.query_documents(rule)
         prompt = f"""
         Contexto del dominio:
@@ -173,61 +194,17 @@ class MLAgents:
         
         Explica esta regla booleana para no expertos: {rule}
         """
-<<<<<<< HEAD
-        return self.llm.invoke(prompt).content
-
-=======
-        explanation = self.llm.invoke(prompt).content
+        explanation = self.llm._generate([{"role": "user", "content": prompt}])
         self.explanation_cache[rule] = explanation
         return explanation
->>>>>>> 802a527 (Add DocumentAnalyzer and MLAgents classes; implement document upload, querying, and agent-based model optimization with Gradio interface)
 
-# 3. Flujo de Trabajo Principal
+# 5. Flujo de Trabajo Principal
 class MLWorkflow:
-    def __init__(self):
-        self.document_analyzer = DocumentAnalyzer()
-        self.agents = MLAgents(self.document_analyzer)
+    def __init__(self, api_key):
+        self.document_analyzer = DocumentAnalyzer(api_key)
+        self.agents = MLAgents(self.document_analyzer, api_key)
         self.current_project = None
     
-<<<<<<< HEAD
-    def run_pipeline(self, data, documents=None):
-        try:
-            # Procesar documentos
-            if documents:
-                doc_status = self.document_analyzer.upload_document(documents.name)
-                if "❌" in doc_status:
-                    return doc_status
-                
-            # Generar características
-            feature_task = Task(
-                description=f"Generar características booleanas para los datos",
-                agent=self.agents.agents['feature_engineer'],
-                expected_output="Lista de reglas booleanas simplificadas"
-            )
-            
-            # Validar características
-            validation_task = Task(
-                description="Validar reglas con conocimiento del dominio",
-                agent=self.agents.agents['domain_validator'],
-                expected_output="Reglas validadas con documentos técnicos",
-                context=[feature_task]
-            )
-            
-            # Optimizar modelo
-            optimization_task = Task(
-                description="Entrenar y optimizar modelo lineal",
-                agent=self.agents.agents['model_optimizer'],
-                expected_output="Modelo entrenado con métricas de rendimiento",
-                context=[validation_task]
-            )
-            
-            # Generar explicaciones
-            explanation_task = Task(
-                description="Crear explicaciones contextuales para cada regla",
-                agent=self.agents.agents['explanation_expert'],
-                expected_output="Reporte explicativo completo",
-                context=[optimization_task]
-=======
     def create_task(self, description, agent_name, expected_output, context=None):
         return Task(
             description=description,
@@ -244,7 +221,7 @@ class MLWorkflow:
                 doc_status = self.document_analyzer.upload_document(documents.name)
                 if "❌" in doc_status:
                     logger.error(doc_status)
-                    return doc_status
+                    return {}, doc_status  # Return empty dict for tabbedinterface and error message for textbox
                 
             logger.info("Generando características booleanas...")
             feature_task = self.create_task(
@@ -275,7 +252,6 @@ class MLWorkflow:
                 'explanation_expert',
                 "Reporte explicativo completo",
                 [optimization_task]
->>>>>>> 802a527 (Add DocumentAnalyzer and MLAgents classes; implement document upload, querying, and agent-based model optimization with Gradio interface)
             )
             
             crew = Crew(
@@ -284,18 +260,17 @@ class MLWorkflow:
                 verbose=2
             )
             
-            return crew.kickoff()
+            result = crew.kickoff()
+            return result, "✅ Pipeline ejecutado exitosamente!"
         
         except Exception as e:
-<<<<<<< HEAD
-=======
             logger.error(f"Error en el pipeline: {str(e)}")
->>>>>>> 802a527 (Add DocumentAnalyzer and MLAgents classes; implement document upload, querying, and agent-based model optimization with Gradio interface)
-            return f"❌ Error en el pipeline: {str(e)}"
+            return {}, f"❌ Error en el pipeline: {str(e)}"  # Return empty dict for tabbedinterface and error message for textbox
 
-# 4. Interfaz de Usuario
-def create_gradio_interface():
-    workflow = MLWorkflow()
+
+# 6. Interfaz de Usuario
+def create_gradio_interface(api_key):
+    workflow = MLWorkflow(api_key)
     
     with gr.Blocks(title="ML Explicable con Agentes Especializados", theme=gr.themes.Soft()) as demo:
         # Header
@@ -308,10 +283,7 @@ def create_gradio_interface():
                 data_input = gr.File(label="1. Subir Dataset (CSV)", file_types=[".csv"])
                 doc_input = gr.File(label="2. Subir Documentos Técnicos (PDF)", file_types=[".pdf"])
                 run_btn = gr.Button("▶️ Ejecutar Pipeline Completo", variant="primary")
-<<<<<<< HEAD
-=======
                 status = gr.Textbox(label="Estado", interactive=False)
->>>>>>> 802a527 (Add DocumentAnalyzer and MLAgents classes; implement document upload, querying, and agent-based model optimization with Gradio interface)
             
             with gr.Column(scale=2):
                 output_panel = gr.TabbedInterface(
@@ -339,15 +311,11 @@ def create_gradio_interface():
                 )
         
         # Sección de Chat
-<<<<<<< HEAD
-        chat = gr.ChatInterface(
-            lambda msg, history: workflow.agents.explanation_generation_tool(msg),
-            additional_inputs=[data_input, doc_input],
-            title="💬 Asistente de Explicaciones"
-=======
-        def chat_response(msg, history):
+        def chat_response(msg, history, data_input, doc_input):
+            # You can use data_input and doc_input if needed in the response
             return workflow.agents.explanation_generation_tool(msg)
         
+
         chat = gr.ChatInterface(
             fn=chat_response,
             additional_inputs=[data_input, doc_input],
@@ -356,32 +324,22 @@ def create_gradio_interface():
                 ["¿Qué es una regla booleana?", None, None],  # Ejemplo 1: solo mensaje
                 ["Explícame la regla A & B", None, None],    # Ejemplo 2: solo mensaje
             ]
->>>>>>> 802a527 (Add DocumentAnalyzer and MLAgents classes; implement document upload, querying, and agent-based model optimization with Gradio interface)
         )
         
         # Manejadores de Eventos
         run_btn.click(
             fn=workflow.run_pipeline,
             inputs=[data_input, doc_input],
-<<<<<<< HEAD
-            outputs=output_panel
-=======
             outputs=[output_panel, status]
->>>>>>> 802a527 (Add DocumentAnalyzer and MLAgents classes; implement document upload, querying, and agent-based model optimization with Gradio interface)
         )
     
     return demo
 
-# Configuración y Ejecución
+# 7. Configuración y Ejecución
 if __name__ == "__main__":
-<<<<<<< HEAD
-    os.environ["OPENAI_API_KEY"] = "sk-tu-api-key-aqui"  # Reemplazar con tu API key
-=======
     load_dotenv()  # Carga las variables de entorno desde un archivo .env
-    api_key = ""
+    api_key = ""  # Asegúrate de tener la API key en el archivo .env
     if not api_key:
-        raise ValueError("La API key de OpenAI no está configurada en el archivo .env")
-    os.environ["OPENAI_API_KEY"] = api_key
->>>>>>> 802a527 (Add DocumentAnalyzer and MLAgents classes; implement document upload, querying, and agent-based model optimization with Gradio interface)
-    app = create_gradio_interface()
+        raise ValueError("La API key de DeepSeek no está configurada en el archivo .env")
+    app = create_gradio_interface(api_key)
     app.launch(server_name="0.0.0.0", server_port=7860)
