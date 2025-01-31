@@ -5,8 +5,8 @@ from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error
 # Create a sample DataFrame
 data = {
-            'A': [0, 1, 1, 1, 0, 1, 1],
-            'B': [1, 0, 1, 0, 0, 0, 1],
+            'A': [0.0, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0],
+            'B': [1.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0],
       'Cluster': [1, 1, 0, 1, 0, 1, 0]  # Target variable
 }
 ##yy=pd.Series({'Cluster': ["x1", "x1", "x0", "x1", "x0", "x1", "x1"]})

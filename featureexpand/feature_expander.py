@@ -106,6 +106,13 @@ def migrate(values, nvariables, formula):
         labels = []
     #print("RESULT",result)
     # Convert the result to a list of binary values
+    #ahora quiero concatenar result con values
+    # Concatenate result with values
+    concatenated_result = []
+    for original, expanded in zip(values, result):
+        concatenated_result.append(original + expanded)
+    
+    return concatenated_result
     return result
 
 
