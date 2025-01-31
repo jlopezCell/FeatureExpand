@@ -2,6 +2,7 @@ import unittest
 import requests
 import pandas as pd
 import json
+from typing import List, Union
 
 def generate_variable_map(variables):
     if not isinstance(variables, list) or len(variables) == 0:
@@ -68,54 +69,61 @@ def encode(numero, n):
         limite = limite * 0.5
     return digitos
 
-
-
-def migrate(values, nvariables, formula):
-    # Encode all values
+def migrate(values: List[List[float]], 
+           nvariables: int, 
+           formula: List[List[int]]) -> List[List[float]]:
+    """
+    Transforms feature vectors using logical formulas and concatenates with original values.
+    
+    Args:
+        values: Input vectors to transform
+        nvariables: Number of variables for encoding
+        formula: Logical formula representation
+        formulaN: Number of formula variables
+    
+    Returns:
+        List of original vectors concatenated with their transformed versions
+    """
+    # Initialize containers for encoded vectors and labels
     vec = []
     labels = []
-
-    X = values    
-    vec = []
-    for i in range(len(X)):
-        vecs = []
-        rx = ""
-        for j in range(len(X[i])):
-            rx += "".join(map(str, encode(X[i][j],nvariables)))
-            vecs.append(encode(X[i][j],nvariables)[0])
-        vec.append(vecs)
-    result = []  
-    logical_expression = ""  
-    for vector in vec:    
-        # Create labels and set global variables
-        for i, valor in enumerate(vector):
-            globals()[f'z{i}'] = True if valor == 1 else False
+    
+    # Step 1: Encode all input values into binary vectors
+    for input_vector in values:
+        encoded_vector = []
+        for value in input_vector:
+            # Extract first element of encoded value (discarding rx string)
+            encoded_vector.append(encode(value, nvariables)[0])
+        vec.append(encoded_vector)
+    
+    # Step 2: Process each encoded vector through logical transformation
+    result = []
+    logical_expression = ""
+    
+    for vector in vec:
+        # Step 2a: Create boolean variables (z0, z1, etc) for logical evaluation
+        for i, value in enumerate(vector):
+            globals()[f'z{i}'] = bool(value == 1)
+            # Create positive and negative labels for each variable
             labels.append(f' (not z{i})')
             labels.append(f'z{i}')
-    
+        
+        # Step 2b: Generate logical expression (only once)
         labels.reverse()
-        if logical_expression=="":        
+        if not logical_expression:
             logical_expression = transform_function(formula, labels)
             logical_expression = logical_expression.replace("&", " and ").replace("!", " not ")
-
-##        print("H1",vector,z0,z1,"=",eval("[" + logical_expression + "]"),"LOGI",logical_expression)
-        # Evaluate the logical expression
+        
+        # Step 2c: Evaluate logical expression and convert to numeric
         preset = eval("[" + logical_expression + "]")
-        # Convert the boolean matrix to a matrix of 0s and 1s
         result = [[1.0 if value else 0.0 for value in row] for row in result]
         preset = [1.0 if value else 0.0 for value in preset]
         result.append(preset)
-        labels = []
-    #print("RESULT",result)
-    # Convert the result to a list of binary values
-    #ahora quiero concatenar result con values
-    # Concatenate result with values
-    concatenated_result = []
-    for original, expanded in zip(values, result):
-        concatenated_result.append(original + expanded)
+        labels.clear()
     
-    return concatenated_result
-    return result
+    # Step 3: Combine original values with transformed results
+    return [original + expanded for original, expanded in zip(values, result)]
+
 
 
 class FeatureExpander:
