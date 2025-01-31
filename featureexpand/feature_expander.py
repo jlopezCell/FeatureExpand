@@ -68,6 +68,8 @@ def encode(numero, n):
         limite = limite * 0.5
     return digitos
 
+
+
 def migrate(values, nvariables, formula):
     # Encode all values
     vec = []

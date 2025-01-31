@@ -35,6 +35,7 @@ data = {
 }
 
 
+## TODO agegrar el vector de los valores negativos deben ayudar a mejorar la prediccion
 data = {
             'A': [0.0, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0],
             'B': [1.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
