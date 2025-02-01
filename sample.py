@@ -28,7 +28,7 @@ datas = {
       'Cluster': [  0,   1,   1,   0,   1,   0,   1]  # Target variable
 }
 
-datas = {
+data = {
             'A': [0.0, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0],
             'B': [1.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0],
       'Cluster': [  0,   1,   1,   0,   1,   1,   1]  # Target variable
