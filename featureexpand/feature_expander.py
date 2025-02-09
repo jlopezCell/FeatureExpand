@@ -147,7 +147,7 @@ def migrate(values: List[List[float]],
 
 
 class FeatureExpander:
-    def __init__(self, n_variables=None, formula=None):
+    def __init__(self, token=None,n_variables=None, formula=None):
         """
         Constructor de la clase FeatureExpander.
 
@@ -160,6 +160,7 @@ class FeatureExpander:
         """
         self.n_variables = n_variables
         self.formula = formula
+        self.token = token
 
     def fit(self, X, y=None, precision=1, response="x1"):
         self.n_variables = precision
@@ -292,7 +293,7 @@ class FeatureExpander:
         """
         url = 'https://www.booloptimizer.com/api/simplify'  # Reemplaza con la URL de tu API
         url = 'http://127.0.0.1:5000/api/simplify'  # Reemplaza con la URL de tu API
-        bearer_token = "39c201cd-6b66-4458-aa38-504e25acdfe1"
+        bearer_token = self.token
         headers = {
             'Authorization': f'Bearer {bearer_token}',
             'Content-Type': 'application/json'

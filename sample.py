@@ -63,7 +63,7 @@ y_pred = model.predict(X_test)
 mse = mean_squared_error(y_test, y_pred)
 precision = 1
 # Initialize the FeatureExpander
-expander = FeatureExpander()
+expander = FeatureExpander("Tp6uxDgDHf+meUtDirx0veUq7L59a6M7IsxjRqUJZlc=")
 # Add new features
 expander.fit(X,yy,precision,response="x1")
 values = [[1,0]]
