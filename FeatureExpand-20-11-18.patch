@@ -1,0 +1,15 @@
+diff --git forkSrcPrefix/node_modules/axios/lib/adapters/http.js forkDstPrefix/node_modules/axios/lib/adapters/http.js
+old mode 100755
+new mode 100644
+diff --git forkSrcPrefix/node_modules/node-gyp-build/bin.js forkDstPrefix/node_modules/node-gyp-build/bin.js
+old mode 100755
+new mode 100644
+diff --git forkSrcPrefix/node_modules/node-gyp-build/build-test.js forkDstPrefix/node_modules/node-gyp-build/build-test.js
+old mode 100755
+new mode 100644
+diff --git forkSrcPrefix/node_modules/node-gyp-build/optional.js forkDstPrefix/node_modules/node-gyp-build/optional.js
+old mode 100755
+new mode 100644
+diff --git forkSrcPrefix/node_modules/sha.js/bin.js forkDstPrefix/node_modules/sha.js/bin.js
+old mode 100755
+new mode 100644
