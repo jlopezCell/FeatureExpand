@@ -52,6 +52,9 @@ df = pd.DataFrame(data)
 # Split the data into training and testing sets
 X = df.drop(columns=['Cluster'])
 y = df['Cluster']
+
+feacture_selection=["A","B"]
+
 yy=pd.Series({'Cluster': [("x1" if yx == 1 else "x0") for yx in y ]})
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 # Fit a linear regression model
@@ -65,7 +68,7 @@ precision = 1
 # Initialize the FeatureExpander
 expander = FeatureExpander("Tp6uxDgDHf+meUtDirx0veUq7L59a6M7IsxjRqUJZlc=")
 # Add new features
-expander.fit(X,yy,precision,response="x1")
+expander.fit(X,yy,feacture_selection,precision,response="x1")
 values = [[1,0]]
 ##print("Resultados ",expander.transform(values))
 df = pd.DataFrame(data)

@@ -162,8 +162,9 @@ class FeatureExpander:
         self.formula = formula
         self.token = token
 
-    def fit(self, X, y=None, precision=1, response="x1"):
+    def fit(self, XInput, y=None,feacture_selection=[], precision=1, response="x1"):
         self.n_variables = precision
+        X = XInput[feacture_selection]
         #print( X, y, precision)
         # Simular la obtención de datos de una hoja de cálculo
         # Supongamos que X es un DataFrame de pandas con los datos de la hoja de cálculo
