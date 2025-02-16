@@ -16,13 +16,7 @@ data = {
       'Cluster': [  0,   0,   1,   0,   1,   0,   1]  # Target variable
 }
 
-datas = {
-            'A': [0.0, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0],
-            'B': [1.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0],
-      'Cluster': [  0,   1,   1,   0,   1,   0,   1]  # Target variable
-}
-
-datas = {
+data = {
             'A': [0.0, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0],
             'B': [1.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0],
       'Cluster': [  0,   1,   1,   0,   1,   0,   1]  # Target variable
@@ -31,6 +25,13 @@ datas = {
 data = {
             'A': [0.0, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0],
             'B': [1.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0],
+      'Cluster': [  0,   1,   1,   0,   1,   0,   1]  # Target variable
+}
+
+data = {
+            'A': [0.0, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0],
+            'B': [1.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0],
+            'C': [1.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0],
       'Cluster': [  0,   1,   1,   0,   1,   1,   1]  # Target variable
 }
 
@@ -40,7 +41,7 @@ data = {
 # X_expanded [[0.0, 1.0, 0.0], [1.0, 0.0, 0.0], [1.0, 1.0, 1.0], [0.0, 0.0, 1.0], [1.0, 0.0, 0.0], [1.0, 1.0, 1.0]]
 # self.formula [[[0, 2]]] self.formulaN [[1, 2]]
 # Mean Squared Error: 0.44444444444444453 vs Mean Squared Error Expanded: 0.9999999999999996
-datas = {
+data2 = {
             'A': [0.0, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0],
             'B': [1.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
       'Cluster': [  0,   1,   1,   0,   1,   1,   1,   0]  # Empeoro el modelo
@@ -64,7 +65,7 @@ model.fit(X_train, y_train)
 y_pred = model.predict(X_test)
 # Evaluate the model
 mse = mean_squared_error(y_test, y_pred)
-precision = 1
+precision = 2
 # Initialize the FeatureExpander
 expander = FeatureExpander("Tp6uxDgDHf+meUtDirx0veUq7L59a6M7IsxjRqUJZlc=")
 # Add new features
