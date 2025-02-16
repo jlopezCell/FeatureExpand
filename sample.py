@@ -69,7 +69,7 @@ precision = 1
 expander = FeatureExpander("Tp6uxDgDHf+meUtDirx0veUq7L59a6M7IsxjRqUJZlc=")
 # Add new features
 expander.fit(X,yy,feacture_selection,precision,response="x1")
-values = [[1,0]]
+#values = [[1,0]]
 ##print("Resultados ",expander.transform(values))
 df = pd.DataFrame(data)
 X = df
