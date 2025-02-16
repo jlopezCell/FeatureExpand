@@ -245,7 +245,7 @@ class FeatureExpander:
         self.formula = formula
         self.token = token
 
-    def fit(self, XInput, y=None, feacture_selection=[], precision=1, response="x1"):
+    def fit(self, XInput, y=None, feacture_selection=[], deep=1, response="x1"):
         """
         Fits the model to the input data.
 
@@ -259,7 +259,7 @@ class FeatureExpander:
         Raises:
             ValueError: If XInput is not a pandas DataFrame.
         """
-        self.n_variables = precision
+        self.n_variables = deep
         X = XInput[feacture_selection]
 
         if isinstance(X, pd.DataFrame):
@@ -274,7 +274,7 @@ class FeatureExpander:
         for i in range(len(X)):
             rx = ""
             for j in range(len(X[i])):
-                rx += "".join(map(str, encode(X[i][j], precision)))
+                rx += "".join(map(str, encode(X[i][j], deep)))
             mintermins.append([rx, y[0][i]])
 
         json_data = {
