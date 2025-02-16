@@ -16,13 +16,7 @@ data = {
       'Cluster': [  0,   0,   1,   0,   1,   0,   1]  # Target variable
 }
 
-datas = {
-            'A': [0.0, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0],
-            'B': [1.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0],
-      'Cluster': [  0,   1,   1,   0,   1,   0,   1]  # Target variable
-}
-
-datas = {
+data = {
             'A': [0.0, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0],
             'B': [1.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0],
       'Cluster': [  0,   1,   1,   0,   1,   0,   1]  # Target variable
@@ -31,6 +25,13 @@ datas = {
 data = {
             'A': [0.0, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0],
             'B': [1.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0],
+      'Cluster': [  0,   1,   1,   0,   1,   0,   1]  # Target variable
+}
+
+data = {
+            'A': [0.0, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0],
+            'B': [1.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0],
+            'C': [1.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0],
       'Cluster': [  0,   1,   1,   0,   1,   1,   1]  # Target variable
 }
 
@@ -40,7 +41,7 @@ data = {
 # X_expanded [[0.0, 1.0, 0.0], [1.0, 0.0, 0.0], [1.0, 1.0, 1.0], [0.0, 0.0, 1.0], [1.0, 0.0, 0.0], [1.0, 1.0, 1.0]]
 # self.formula [[[0, 2]]] self.formulaN [[1, 2]]
 # Mean Squared Error: 0.44444444444444453 vs Mean Squared Error Expanded: 0.9999999999999996
-datas = {
+data2 = {
             'A': [0.0, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0],
             'B': [1.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
       'Cluster': [  0,   1,   1,   0,   1,   1,   1,   0]  # Empeoro el modelo
@@ -52,6 +53,9 @@ df = pd.DataFrame(data)
 # Split the data into training and testing sets
 X = df.drop(columns=['Cluster'])
 y = df['Cluster']
+
+feacture_selection=["A","B"]
+
 yy=pd.Series({'Cluster': [("x1" if yx == 1 else "x0") for yx in y ]})
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 # Fit a linear regression model
@@ -61,12 +65,12 @@ model.fit(X_train, y_train)
 y_pred = model.predict(X_test)
 # Evaluate the model
 mse = mean_squared_error(y_test, y_pred)
-precision = 1
+precision = 2
 # Initialize the FeatureExpander
 expander = FeatureExpander("Tp6uxDgDHf+meUtDirx0veUq7L59a6M7IsxjRqUJZlc=")
 # Add new features
-expander.fit(X,yy,precision,response="x1")
-values = [[1,0]]
+expander.fit(X,yy,feacture_selection,precision,response="x1")
+#values = [[1,0]]
 ##print("Resultados ",expander.transform(values))
 df = pd.DataFrame(data)
 X = df

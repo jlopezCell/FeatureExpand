@@ -15,15 +15,16 @@ def number_to_variable(number, variable_map):
     return variable_map[number]
 
 def list_to_logical_expression(lst, variable_map):
-    if not isinstance(lst, list):
-        return number_to_variable(lst, variable_map)
-    if len(lst) == 0:
-        return "TRUE"  # Caso especial para lista vacía
-    xxy = lst[0]
-    negat = "!" if (xxy%2 == 0) else ""
-    #print("H3..",lst,variable_map,lst[0],"Deben ser ",xxy - xxy%2 , xxy)
-    ##int(num / 2)*2
-    expression = negat + "(" + '^'.join(number_to_variable((num - num%2), variable_map).replace("'", "") for num in lst) + ")" 
+    try:
+        if not isinstance(lst, list):
+            return number_to_variable(lst, variable_map)
+        if len(lst) == 0:
+            return "TRUE"  # Caso especial para lista vacía
+        xxy = lst[0]
+        negat = "!" if (xxy % 2 == 0) else ""
+        expression = negat + "(" + '^'.join(number_to_variable((num - num % 2), variable_map).replace("'", "") for num in lst) + ")"
+    except Exception as e:
+        raise ValueError(f"Error al convertir la lista a expresión lógica: {e}")
     #print("H2..",expression)
     return expression
 
@@ -107,11 +108,12 @@ def migrate(values: List[List[float]],
     
     for vector in vec:
         # Step 2a: Create boolean variables (z0, z1, etc) for logical evaluation
-        for i, value in enumerate(vector):
-            globals()[f'z{i}'] = bool(value == 1)
-            # Create positive and negative labels for each variable
-            labels.append(f' (not z{i})')
-            labels.append(f'z{i}')
+        for j in range(nvariables):        
+            for i, value in enumerate(vector):
+                globals()[f'z{i}'] = bool(value == 1)
+                # Create positive and negative labels for each variable
+                labels.append(f' (not z{i})')
+                labels.append(f'z{i}')
         
         # Step 2b: Generate logical expression (only once)
         labels.reverse()
@@ -162,8 +164,9 @@ class FeatureExpander:
         self.formula = formula
         self.token = token
 
-    def fit(self, X, y=None, precision=1, response="x1"):
+    def fit(self, XInput, y=None,feacture_selection=[], precision=1, response="x1"):
         self.n_variables = precision
+        X = XInput[feacture_selection]
         #print( X, y, precision)
         # Simular la obtención de datos de una hoja de cálculo
         # Supongamos que X es un DataFrame de pandas con los datos de la hoja de cálculo
