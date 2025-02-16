@@ -17,7 +17,7 @@ def generate_variable_map(variables: List[str]) -> List[str]:
         ValueError: If the input is not a non-empty list.
     """
     if not isinstance(variables, list) or len(variables) == 0:
-        raise ValueError("Variables debe ser un array no vacío")
+        raise ValueError("Variables must be a non-empty list")
     return [f"{variable}'" for variable in variables]
 
 def number_to_variable(number: int, variable_map: List[str]) -> str:
@@ -35,7 +35,7 @@ def number_to_variable(number: int, variable_map: List[str]) -> str:
         ValueError: If the index is out of range.
     """
     if number < 0 or number >= len(variable_map):
-        raise ValueError(f"Índice {number} fuera de rango para el mapa de variables")
+        raise ValueError(f"Index {number} is out of range for the variable map")
     return variable_map[number]
 
 def list_to_logical_expression(lst: Union[List[int], int], variable_map: List[str]) -> str:
@@ -61,7 +61,7 @@ def list_to_logical_expression(lst: Union[List[int], int], variable_map: List[st
         negat = "!" if (xxy % 2 == 0) else ""
         expression = negat + "(" + '^'.join(number_to_variable((num - num % 2), variable_map).replace("'", "") for num in lst) + ")"
     except Exception as e:
-        raise ValueError(f"Error al convertir la lista a expresión lógica: {e}")
+        raise ValueError(f"Error converting list to logical expression: {e}")
     return expression
 
 def list_to_xor_expression(lst: List[int], variable_map: List[str]) -> str:
@@ -79,7 +79,7 @@ def list_to_xor_expression(lst: List[int], variable_map: List[str]) -> str:
         TypeError: If the input is not a list.
     """
     if not isinstance(lst, list):
-        raise TypeError(f"Se esperaba un array 02, pero se recibió {type(lst).__name__}")
+        raise TypeError(f"Expected a list, but received {type(lst).__name__}")
     if len(lst) == 0:
         return ""  # Special case for empty list
     return '&'.join(number_to_variable(num, variable_map) for num in lst)
@@ -99,12 +99,12 @@ def transform_function(representation: List[List[int]], variable_map: List[str])
         ValueError: If the input is not a non-empty list or if there is an error in transformation.
     """
     if not isinstance(representation, list) or len(representation) == 0:
-        raise ValueError("La representación debe ser un array no vacío")
+        raise ValueError("Representation must be a non-empty list")
     try:
         expressions = []
         for term in representation:
             if not isinstance(term, list) or len(term) < 1:
-                raise ValueError("Cada término debe ser un array no vacío")
+                raise ValueError("Each term must be a non-empty list")
             output = ""
             for element in term:
                 and_part = element
@@ -113,7 +113,7 @@ def transform_function(representation: List[List[int]], variable_map: List[str])
             expressions.append(output)
         return ','.join(expressions)
     except Exception as error:
-        raise ValueError(f"Error al transformar la función: {error}")
+        raise ValueError(f"Error transforming function: {error}")
 
 def encode(numero: float, n: int) -> List[int]:
     """
@@ -130,7 +130,7 @@ def encode(numero: float, n: int) -> List[int]:
         ValueError: If the number is negative.
     """
     if numero < 0:
-        raise ValueError("El valor no puede ser negativo")
+        raise ValueError("Value cannot be negative")
 
     resto = numero
     digitos = []
@@ -266,7 +266,7 @@ class FeatureExpander:
             headers = ["mintermins", "Cluster"]
             data = X.values.tolist()
         else:
-            raise ValueError("X debe ser un DataFrame de pandas")
+            raise ValueError("X must be a pandas DataFrame")
         
         X = X.values.tolist()
         y = y.values.tolist()        
@@ -311,7 +311,7 @@ class FeatureExpander:
             data = X
             headers = ["mintermins"]
         if self.n_variables is None or self.formula is None:
-            raise ValueError("n_variables y formula deben ser especificados antes de expandir las características.")
+            raise ValueError("n_variables and formula must be specified before expanding features.")
         X_expanded = migrate(data, self.n_variables, self.formula, self.formulaN)
         return X_expanded
 
@@ -333,7 +333,7 @@ class FeatureExpander:
             headers = X.columns.tolist()
             data = X.values.tolist()
         else:
-            raise ValueError("X debe ser un DataFrame de pandas")
+            raise ValueError("X must be a pandas DataFrame")
 
         json_data = {
             "sheetData": {
@@ -386,15 +386,15 @@ class FeatureExpander:
             if formula is not None:
                 self.formula = formula
             else:
-                raise ValueError("No se encontró la fórmula con la etiqueta 'Cumple' en la respuesta de la API.")
+                raise ValueError("No formula with the label 'Cumple' was found in the API response.")
 
             if formulaN is not None:
                 self.formulaN = formulaN
             else:
-                raise ValueError("No se encontró la fórmula con la etiqueta 'No Cumple' en la respuesta de la API.")
+                raise ValueError("No formula with the label 'No Cumple' was found in the API response.")
 
         except requests.exceptions.RequestException as e:
-            print(f"Error al enviar datos a la API: {e}")
+            print(f"Error sending data to API: {e}")
 
     def transform(self, X):
         """
@@ -410,7 +410,7 @@ class FeatureExpander:
             ValueError: If n_variables or formula is not specified.
         """
         if self.n_variables is None or self.formula is None:
-            raise ValueError("n_variables y formula deben ser especificados antes de transformar los datos.")
+            raise ValueError("n_variables and formula must be specified before transforming data.")
         X_transformed = migrate(X, self.n_variables, self.formula)
         return X_transformed
 
