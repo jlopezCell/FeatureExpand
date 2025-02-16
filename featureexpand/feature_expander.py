@@ -180,13 +180,15 @@ def migrate(values: List[List[float]],
     logical_expressionN = ""
 
     for vector in vec:
+        idx = 0
         # Step 2a: Create boolean variables (z0, z1, etc) for logical evaluation
         for j in range(nvariables):        
             for i, value in enumerate(vector):
-                globals()[f'z{i}'] = bool(value == 1)
+                globals()[f'z{idx}'] = bool(value == 1)
                 # Create positive and negative labels for each variable
-                labels.append(f' (not z{i})')
-                labels.append(f'z{i}')
+                labels.append(f' (not z{idx})')
+                labels.append(f'z{idx}')
+                idx = idx + 1
         
         # Step 2b: Generate logical expression (only once)
         labels.reverse()
