@@ -3,6 +3,8 @@ import pandas as pd
 import json
 from typing import List, Union
 
+
+
 def generate_variable_map(variables: List[str]) -> List[str]:
     """
     Generates a variable map by appending an apostrophe to each variable name.
@@ -232,7 +234,7 @@ class FeatureExpander:
         token (str): Token for API authentication.
     """
 
-    def __init__(self, token=None, n_variables=None, formula=None):
+    def __init__(self, token=None, n_variables=None, formula=None, enviroment="PROD"):
         """
         Initializes the FeatureExpander class.
 
@@ -244,6 +246,7 @@ class FeatureExpander:
         self.n_variables = n_variables
         self.formula = formula
         self.token = token
+        self.enviroment = enviroment
 
     def fit(self, XInput, y=None, feacture_selection=[], deep=1, response="x1"):
         """
@@ -259,8 +262,11 @@ class FeatureExpander:
         Raises:
             ValueError: If XInput is not a pandas DataFrame.
         """
+
         self.n_variables = deep
         X = XInput[feacture_selection]
+        print(f"{len(X)}!={len(y)}")
+        assert(len(X)==len(y))
 
         if isinstance(X, pd.DataFrame):
             headers = ["mintermins", "Cluster"]
@@ -275,7 +281,7 @@ class FeatureExpander:
             rx = ""
             for j in range(len(X[i])):
                 rx += "".join(map(str, encode(X[i][j], deep)))
-            mintermins.append([rx, y[0][i]])
+            mintermins.append([rx, y[i][0]])
 
         json_data = {
             "sheetData": {
@@ -357,8 +363,10 @@ class FeatureExpander:
         Raises:
             ValueError: If the API response does not contain the expected formulas.
         """
-        url = 'https://www.booloptimizer.com/api/simplify'  # Replace with your API URL
-        url = 'http://127.0.0.1:5000/api/simplify'  # Replace with your API URL
+        if self.enviroment == "PROD": 
+            url = 'https://www.booloptimizer.com/api/simplify'  # Replace with your API URL
+        else:
+            url = 'http://127.0.0.1:5000/api/simplify'  # Replace with your API URL
         bearer_token = self.token
         headers = {
             'Authorization': f'Bearer {bearer_token}',
